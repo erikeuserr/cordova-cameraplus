@@ -12,7 +12,7 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 import org.apache.cordova.PluginResult.Status;
-import org.apache.http.conn.util.InetAddressUtils;
+// import org.apache.http.conn.util.InetAddressUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,21 +71,29 @@ public class CameraPlus extends CordovaPlugin {
     }
 
 
-    private PluginResult startCamera(JSONArray inputs, CallbackContext callbackContext) {
-        Log.w(LOGTAG, "startCamera");
+    private PluginResult startCamera(JSONArray inputs, final CallbackContext callbackContext) {
+        
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.w(LOGTAG, "startCamera");
 
-         // initialize the camera manager :)
-         CameraManager.init(cordova.getActivity().getApplicationContext());
-         startCapture();
+                // initialize the camera manager :)
+                CameraManager.init(cordova.getActivity().getApplicationContext());
+                startCapture();
+                callbackContext.success("Camera started!");
+            }
+        });
 
          return null;
     }
 
-    private PluginResult stopCamera(JSONArray inputs, CallbackContext callbackContext) {
+    private PluginResult stopCamera(JSONArray inputs, final CallbackContext callbackContext) {
         Log.w(LOGTAG, "stopCamera");
 
         // stop Capturing but do not we cannot free the CameraManager :s
         stopCapture();
+        callbackContext.success("Camera stopped!");
 
         return null;
     }

@@ -3,6 +3,7 @@ package com.moonware.cameraplus;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -743,6 +744,7 @@ final class PreviewCallback implements Camera.PreviewCallback {
 
 			synchronized (this)
 			{
+				Log.w("SET lastImage", Arrays.toString(outputStream.toByteArray()));
 				lastImage = outputStream.toByteArray();
 			}
 			
