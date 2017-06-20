@@ -98,26 +98,24 @@ public class CameraPlus extends CordovaPlugin {
         return null;
     }
 
-    private PluginResult getJpegImage(JSONArray inputs, CallbackContext callbackContext) {
-    	Log.w(LOGTAG, "getJpegImage");
-        
-        byte[] bArray = CameraManager.lastFrame();
-        
-        if (bArray != null)
-        {
-        	Log.w(LOGTAG, "Received " + String.valueOf(bArray.length) + " bytes...");
-        
-        	String imageEncoded = Base64.encodeToString(bArray,Base64.NO_WRAP);
+    private PluginResult getJpegImage(JSONArray inputs, final CallbackContext callbackContext) {
 
-        	//Log.e("LOOK", imageEncoded);       
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.w(LOGTAG, "getJpegImage");
+                byte[] bArray = CameraManager.lastFrame();
+                
+                if (bArray != null) {
+                    Log.w(LOGTAG, "Received " + String.valueOf(bArray.length) + " bytes...");
+                    String imageEncoded = Base64.encodeToString(bArray,Base64.NO_WRAP);
+                    callbackContext.success( imageEncoded );
+                } else {
+                    callbackContext.error(0);        	
+                }
+            }
+        });
 
-        	callbackContext.success( imageEncoded );
-        }
-        else
-        {
-        	callbackContext.error(0);        	
-        }
-        
         return null;
     }
 
